@@ -7,13 +7,16 @@ window['bg'] = "#000000"
 window.title = "Converter"
 messagebox.showinfo("Information", "            Hello, User! \n"
                                                "This information will help you use the application\n"
-                                               ">>Enter the number you want to convert using the keyboard in the number section.\n"
+                                               ">>Enter the number you want to convert using"
+                                               " the keyboard in the number section.\n"
                                                ">>To clear the input window, click clear.\n"
                                                ">>Choose from which number system we translate your number.\n"
                                                ">>After that you will get the result.\n"
                                                ">>To exit the program, press exit.\n"
-                                               "   P.s:If you enter a number from a computer keyboard, the letters should be uppercase.\n"
+                                               "   P.s:If you enter a number from a computer keyboard,"
+                                               " the letters should be uppercase.\n"
                                                "                             Good Luck!")
+
 title = Label(window, text="Converter", font=('Arial', 18, 'bold'), fg='Yellow', bg='#000000')
 title.pack(fill='x')
 input_window = Entry(window, font=('Arial', 12), fg='white', bg='#1c1c1b', relief='sunken', bd=3)
@@ -69,25 +72,71 @@ button_clear = Button(Num, text='Clear', font=('Arial', 12), fg='Yellow', bg='Bl
 button_clear.grid(row=3, column=3, columnspan=2)
 
 
+def chunk_str_from_end(string, chunk_size):
+    result = []
+    i = len(string)
+    while i > 0:
+        if i - chunk_size > 0:
+            result.append(string[i - chunk_size:i])
+        else:
+            result.append(string[0:i])
+        i -= chunk_size
+    return result
+
+
+hash_table = {'0000': '0', '0001': '1', '0010': '2', '0011': '3', '0100': '4', '0101': '5', '0110': '6',
+              '0111': '7', '1000': '8', '1001': '9', '1010': 'A', '1011': 'B', '1100': 'C', '1101': 'D',
+              '1110': 'E', '1111': 'F'}
+
+
+def bin_hex(binary):
+    chunk_result = chunk_str_from_end(binary, 4)
+    hex_result = ""
+    chunk_result.reverse()
+    for x in chunk_result:
+        binary_chunk = x
+        if len(binary_chunk) < 4:
+            binary_chunk = binary_chunk.zfill(4)
+        hex_result += hash_table[binary_chunk]
+    return hex_result
+
+
 def bin_dec(value):
-    dec = 0
-    value = (str(value))
-    power = 0
-    for number in value:
-        if number == '1':
-            dec += 2**power
-        power += 1
-    return value
+ dec_num = 0
+ power = 0
+ while value > 0:
+  dec_num += 2 ** power * (value % 10)
+  value //= 10
+  power += 1
+ return dec_num
+
+
+def bin_oct(value):
+ octal = 0
+ decimal = 0
+ i = 0
+ while value != 0:
+  decimal += int((value % 10) * math.pow(2,i))
+  i = i + 1
+  value = int(value/10)
+ i = 1
+ while decimal != 0:
+  octal += (decimal % 8) * i
+  decimal = int(decimal/8)
+  i *= 10
+ return octal
+ return decimal
 
 
 def binary():
     display.configure(state='normal')
     display.delete(1.0, END)
     try:
-        value = int(input_window.get(),2)
-        display.insert(END, 'Oct  =  ' + str(oct(value))[2:])
+        value = int(input_window.get())
+        binary = str(input_window.get())
+        display.insert(END, 'Oct  =  ' + str(bin_oct(value)))
         display.insert(END, '\nDec  =  ' + str(bin_dec(value)))
-        display.insert(END, '\nHex =  ' + str(hex(value))[2:])
+        display.insert(END, '\nHex =  ' + str(bin_hex(binary)))
     except:
         display.insert(END, 'Wrong!')
     display.configure(state='disabled')
@@ -105,27 +154,43 @@ def oct_dec(value):
 
 
 def oct_bin(value):
-    binary = ""
+    num = ""
     while value != 0:
         d = int(value % 10)
         if d == 0:
-            binary = "".join(["000", binary])
+            num = "".join(["000", num])
         elif d == 1:
-            binary = "".join(["001", binary])
+            num = "".join(["001", num])
         elif d == 2:
-            binary = "".join(["010", binary])
+            num = "".join(["010", num])
         elif d == 3:
-            binary = "".join(["011", binary])
+            num = "".join(["011", num])
         elif d == 4:
-            binary = "".join(["100", binary])
+            num = "".join(["100", num])
         elif d == 5:
-            binary = "".join(["101", binary])
+            num = "".join(["101", num])
         elif d == 6:
-            binary = "".join(["110", binary])
+            num = "".join(["110", num])
         elif d == 7:
-            binary = "".join(["111", binary])
+            num = "".join(["111", num])
         value = int(value / 10)
-    return binary
+    return num
+
+
+def oct_hex(value):
+    array = [str(i) for i in range(10)] + ["A", "B", "C", "D", "E", "F"]
+    result = ""
+    dec = 0
+    base = 1
+    while value:
+        last_digit = value % 10
+        value = int(value / 10)
+        dec += last_digit * base
+        base = base * 8
+    while dec:
+            result += array[dec % 16]
+            dec //= 16
+    return result[::-1]
 
 
 def octal():
@@ -135,7 +200,7 @@ def octal():
         value = int(input_window.get())
         display.insert(END, 'Bin   =  ' + str(oct_bin(value))[1:])
         display.insert(END, '\nDec  =  ' + str(oct_dec(value)))
-        display.insert(END, '\nHex = ' + str(hex(value))[2:])
+        display.insert(END, '\nHex = ' + str(oct_hex(value)))
     except:
         display.insert(END, 'Wrong!')
     display.configure(state='disabled')
@@ -219,7 +284,6 @@ def hex_oct(value):
         dec = dec + 14 * int(math.pow(16, num))
     elif d == 'F':
         dec = dec + 15 * int(math.pow(16, num))
-        break
     i += 1
     num -= 1
  while dec > 0:
@@ -270,4 +334,5 @@ button_exit.grid(row=1, column=1, columnspan=2)
 display = Text(window, font=('Arial', 12), fg='white', bg='#1c1c1b', relief='sunken', bd=3)
 display.pack(fill='x')
 display.configure(state='disabled')
+
 window.mainloop()
