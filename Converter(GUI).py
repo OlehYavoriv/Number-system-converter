@@ -72,15 +72,15 @@ button_clear = Button(Num, text='Clear', font=('Arial', 12), fg='Yellow', bg='Bl
 button_clear.grid(row=3, column=3, columnspan=2)
 
 
-def chunk_str_from_end(string, chunk_size):
+def str_from_end(string, size):
     result = []
     i = len(string)
     while i > 0:
-        if i - chunk_size > 0:
-            result.append(string[i - chunk_size:i])
+        if i - size > 0:
+            result.append(string[i - size:i])
         else:
             result.append(string[0:i])
-        i -= chunk_size
+        i -= size
     return result
 
 
@@ -90,14 +90,14 @@ table = {'0000': '0', '0001': '1', '0010': '2', '0011': '3', '0100': '4', '0101'
 
 
 def bin_hex(binary):
-    chunk_result = chunk_str_from_end(binary, 4)
+    result = str_from_end(binary, 4)
     hex_result = ""
-    chunk_result.reverse()
-    for x in chunk_result:
-        binary_chunk = x
-        if len(binary_chunk) < 4:
-            binary_chunk = binary_chunk.zfill(4)
-        hex_result += table[binary_chunk]
+    result.reverse()
+    for x in result:
+        binary = x
+        if len(binary) < 4:
+            binary = binary.zfill(4)
+        hex_result += table[binary]
     return hex_result
 
 
