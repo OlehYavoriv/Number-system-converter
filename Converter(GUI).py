@@ -84,7 +84,7 @@ def chunk_str_from_end(string, chunk_size):
     return result
 
 
-hash_table = {'0000': '0', '0001': '1', '0010': '2', '0011': '3', '0100': '4', '0101': '5', '0110': '6',
+table = {'0000': '0', '0001': '1', '0010': '2', '0011': '3', '0100': '4', '0101': '5', '0110': '6',
               '0111': '7', '1000': '8', '1001': '9', '1010': 'A', '1011': 'B', '1100': 'C', '1101': 'D',
               '1110': 'E', '1111': 'F'}
 
@@ -97,7 +97,7 @@ def bin_hex(binary):
         binary_chunk = x
         if len(binary_chunk) < 4:
             binary_chunk = binary_chunk.zfill(4)
-        hex_result += hash_table[binary_chunk]
+        hex_result += table[binary_chunk]
     return hex_result
 
 
