@@ -208,11 +208,11 @@ def octal():
 
 def dec_oct(value):
  octal = 0
- ctr = 0
+ power = 0
  while value > 0:
-    octal += ((value % 8) * (10 ** ctr))
+    octal += ((value % 8) * (10 ** power))
     value = int(value / 8)
-    ctr += 1
+    power += 1
  return octal
 
 
